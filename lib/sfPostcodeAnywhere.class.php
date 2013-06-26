@@ -68,7 +68,7 @@ class sfPostcodeAnywhere
     $url = $this->serviceUrl . '/' . $method . '/' . $this->apiVersion . '/' . $this->apiType . '.ws?';
 
     $params = array(
-      'Key' => urlencode($this->licenceKey)
+      'Key=' . urlencode($this->licenceKey)
     );
 
     foreach ($data as $key => $value)
@@ -126,7 +126,7 @@ class sfPostcodeAnywhere
 
     $result = $this->getData($url);
 
-    return true;
+    return $result;
   }
 }
 
