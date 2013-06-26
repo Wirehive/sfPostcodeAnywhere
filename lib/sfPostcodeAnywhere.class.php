@@ -1,10 +1,28 @@
 <?php
+/**
+ * sfPostcodeAnywhere
+ *
+ * Interface with the PostcodeAnywhere API
+ *
+ * @package    symfony
+ * @subpackage plugin
+ * @author     Robin Corps
+ */
 class sfPostcodeAnywhere
 {
   private $accountCode;
   private $licenceKey;
   private $serviceUrl;
 
+
+  /**
+  * Construct the object, setting the default values.
+  *
+  * @param string $accountCode
+  * @param string $licenceKey
+  * @param string $serviceUrl
+  * @return sfPostcodeAnywhere
+  */
   public function __construct($accountCode = false, $licenceKey = false, $serviceUrl = false)
   {
     if ($accountCode)
@@ -31,26 +49,47 @@ class sfPostcodeAnywhere
     }
     else
     {
-      $this->serviceUrl = sfConfig::get('app_postcodeanywhere_service_url', 'http://services.postcodeanywhere.co.uk/');
+      $this->serviceUrl = sfConfig::get('app_postcodeanywhere_service_url', 'http://services.postcodeanywhere.co.uk');
     }
   }
 
 
-  protected function prepareUrl($data)
+  /**
+  * Prepare the URL to fetch, given an array of key-value pairs
+  *
+  * @param string $method
+  * @param array $data
+  * @return string
+  */
+  protected function prepareUrl($method, array $data = null)
   {
-    /* Build up the URL to request the data from. */
-   $sURL = "http://services.postcodeanywhere.co.uk/xml.aspx?";
-   $sURL .= "account_code=" . urlencode($ACCOUNTCODE);
-   $sURL .= "&license_code=" . urlencode($LICENSEKEY);
-   $sURL .= "&action=fetch";
-   $sURL .= "&style=simple";
-   $sURL .= "&id=" . $AddressID;
+    $url = $this->serviceUrl . '/' . $method . '?';
+
+    $params = array(
+      'Key' => urlencode($this->licenceKey)
+    );
+
+    foreach ($data as $key => $value)
+    {
+      $params[] = $key . '=' . urlencode($value);
+    }
+
+    $url .= implode('&', $params);
+
+    return $url;
   }
 
 
+  /**
+  * Validate a given email address using the PostcodeAnywhere API
+  *
+  * @param string $email
+  * @return boolean
+  * @todo implement!
+  */
   public function validateEmail($email)
   {
-
+    return true;
   }
 }
 
