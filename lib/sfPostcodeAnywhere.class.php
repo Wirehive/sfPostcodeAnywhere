@@ -111,11 +111,20 @@ class sfPostcodeAnywhere
   * Validate a given email address using the PostcodeAnywhere API
   *
   * @param string $email
+  * @param int $timeout
   * @return boolean
   * @todo implement!
   */
-  public function validateEmail($email)
+  public function validateEmail($email, $timeout = 3)
   {
+    $params = array(
+      'Email' => $email,
+      'Timeout' => $timeout
+    );
+
+    $url = $this->prepareUrl('EmailValidation/Interactive/Validate', $params);
+
+    $result = $this->getData($url);
 
     return true;
   }
