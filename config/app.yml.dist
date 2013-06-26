@@ -1,0 +1,5 @@
+all:
+  postcodeanywhere:
+    account_code:
+    licence_key:
+    service_url:
