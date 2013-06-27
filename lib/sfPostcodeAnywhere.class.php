@@ -103,7 +103,7 @@ class sfPostcodeAnywhere
     curl_close($ch);
 
     // because we're always using the JSON API interface we can just return the json_decode()'d results
-    return json_decode($data);
+    return json_decode($data, true);
   }
 
 
@@ -115,7 +115,7 @@ class sfPostcodeAnywhere
   * @return boolean
   * @todo implement!
   */
-  public function validateEmail($email, $timeout = 3)
+  public function validateEmail($email, &$result, $timeout = 3)
   {
     $params = array(
       'Email' => $email,
@@ -124,9 +124,20 @@ class sfPostcodeAnywhere
 
     $url = $this->prepareUrl('EmailValidation/Interactive/Validate', $params);
 
-    $result = $this->getData($url);
+    $results = $this->getData($url);
 
-    return $result;
+    // the API returns an array but as we're only ever checking one result we can just take the first item off the array
+    $result = $results['Items'][0];
+
+    // check that the given address has a valid mail server, format and DNS record
+    $valid = true;
+
+    if (!($result['MailServer'] && $result['ValidFormat'] && $result['FoundDnsRecord']))
+    {
+      $valid = false;
+    }
+
+    return $valid;
   }
 }
 
