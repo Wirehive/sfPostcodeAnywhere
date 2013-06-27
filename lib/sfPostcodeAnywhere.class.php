@@ -13,7 +13,6 @@ class sfPostcodeAnywhere
   private $accountCode;
   private $licenceKey;
   private $serviceUrl;
-  private $apiVersion = 'v1.10';
   private $apiType = 'json3';
 
 
@@ -63,9 +62,9 @@ class sfPostcodeAnywhere
   * @param array $data
   * @return string
   */
-  protected function prepareUrl($method, array $data = null)
+  protected function prepareUrl($method, $version, array $data = null)
   {
-    $url = $this->serviceUrl . '/' . $method . '/' . $this->apiVersion . '/' . $this->apiType . '.ws?';
+    $url = $this->serviceUrl . '/' . $method . '/' . $version . '/' . $this->apiType . '.ws?';
 
     $params = array(
       'Key=' . urlencode($this->licenceKey)
@@ -122,7 +121,7 @@ class sfPostcodeAnywhere
       'Timeout' => $timeout
     );
 
-    $url = $this->prepareUrl('EmailValidation/Interactive/Validate', $params);
+    $url = $this->prepareUrl('EmailValidation/Interactive/Validate', 'v1.10', $params);
 
     $results = $this->getData($url);
 
@@ -161,7 +160,7 @@ class sfPostcodeAnywhere
       'Filter' => $filter
     );
 
-    $url = $this->prepareUrl('PostcodeAnywhere/Interactive/Find', $params);
+    $url = $this->prepareUrl('PostcodeAnywhere/Interactive/Find', 'v1.10', $params);
 
     $results = $this->getData($url);
 
