@@ -172,21 +172,28 @@ class sfPostcodeAnywhere
       // if a place or a street has been provided then try to do some validation against them
       if ($place || $street)
       {
-        $valid = false;
+        $valid = true;
+        $validStreet = false;
+        $validPlace = false;
         $street = strtolower(preg_replace('/[^\w]+/', '', $street));
         $place = strtolower(preg_replace('/[^\w]+/', '', $place));
 
         foreach ($matches as $match)
         {
-          if ($street && strstr(strtolower(preg_replace('/\s+/', '', $match['StreetAddress'])), $street))
+          if ($street && strstr(strtolower(preg_replace('/[^\w]+/', '', $match['StreetAddress'])), $street))
           {
-            $valid = true;
+            $validStreet = true;
           }
 
-          if ($place && $place == strtolower(preg_replace('/\s+/', '', $match['Place'])))
+          if ($place && $place == strtolower(preg_replace('/[^\w]+/', '', $match['Place'])))
           {
-            $valid = true;
+            $validPlace = true;
           }
+        }
+
+        if (($street && !$validStreet) || ($place && !$validPlace))
+        {
+          $valid = false;
         }
 
         return $valid;
