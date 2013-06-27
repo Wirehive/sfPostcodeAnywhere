@@ -111,9 +111,9 @@ class sfPostcodeAnywhere
   * Validate a given email address using the PostcodeAnywhere API
   *
   * @param string $email
+  * @param array $result
   * @param int $timeout
   * @return boolean
-  * @todo implement!
   */
   public function validateEmail($email, &$result, $timeout = 3)
   {
