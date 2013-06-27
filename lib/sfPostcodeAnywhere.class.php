@@ -142,7 +142,8 @@ class sfPostcodeAnywhere
 
 
   /**
-  * put your comment there...
+  * Validates a UK postal address.
+  * Can validate just on postcode, or it can validate that a place or address matches a given postcode.
   *
   * @param array $matches
   * @param string $postcode
@@ -152,7 +153,7 @@ class sfPostcodeAnywhere
   * @param string $preferredLanguage
   * @return boolean
   */
-  public function validateAddress(&$matches, $postcode, $place = false, $street = false, $filter = 'None', $preferredLanguage = 'English')
+  public function validateAddressUK(&$matches, $postcode, $place = false, $street = false, $filter = 'None', $preferredLanguage = 'English')
   {
     $params = array(
       'SearchTerm' => $postcode,
