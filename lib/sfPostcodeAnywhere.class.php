@@ -59,12 +59,13 @@ class sfPostcodeAnywhere
   * Prepare the URL to fetch, given an array of key-value pairs
   *
   * @param string $method
+  * @param string $apiVersion
   * @param array $data
   * @return string
   */
-  protected function prepareUrl($method, $version, array $data = null)
+  protected function prepareUrl($method, $apiVersion, array $data = null)
   {
-    $url = $this->serviceUrl . '/' . $method . '/' . $version . '/' . $this->apiType . '.ws?';
+    $url = $this->serviceUrl . '/' . $method . '/' . $apiVersion . '/' . $this->apiType . '.ws?';
 
     $params = array(
       'Key=' . urlencode($this->licenceKey)
