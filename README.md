@@ -7,8 +7,9 @@ Setup & Configuration
 ---------------------
 
 You will need to register an account with [PostcodeAnywhere](http://www.postcodeanywhere.co.uk).
-Copy or rename the app.yml.dist file to app.yml, or copy the content to your project or application app.yml.
+Copy or rename the `app.yml.dist` file to `app.yml`, or copy the content to your project or application `app.yml`.
 Fill in the details (minimum required is licence key, obtained from PostcodeAnywhere).
+Alternatively you can provide the details when constructing the object: `new sfPostcodeAnywhere('accountCode', 'licenceKey', 'serviceUrl')`
 
 Examples
 --------
