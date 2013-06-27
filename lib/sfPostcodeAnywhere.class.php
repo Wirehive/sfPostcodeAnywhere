@@ -208,5 +208,85 @@ class sfPostcodeAnywhere
     // no results found for the postcode so it's an invalid address
     return false;
   }
+
+
+  /**
+  * Validates an international postal address.
+  * Can validate just on postcode, or it can validate that components of an address exist on a given postcode.
+  *
+  * @param array $matches
+  * @param string $countryCode
+  * @param string $postcode
+  * @param string $state
+  * @param string $city
+  * @param string $street
+  * @param int $buildingNumber
+  */
+  public function validateAddressInternational(&$matches, $countryCode, $postcode, $state = false, $city = false, $street = false, $buildingNumber = false)
+  {
+    $params = array(
+      'Country' => $countryCode,
+      'PostalCode' => $postcode
+    );
+
+    // if building has been provided then we can filter the retrieved results before having to do manual filtering
+    if ($buildingNumber)
+    {
+      $params['Building'] = $buildingNumber;
+    }
+
+    $url = $this->prepareUrl('PostcodeAnywhereInternational/Interactive/RetrieveByPostalCode', 'v2.20', $params);
+
+    $results = $this->getData($url);
+
+    if (array_key_exists('Items', $results) && count($results['Items']))
+    {
+      $matches = $results['Items'];
+
+      // if an address component has been provided then try to do some validation against it
+      if ($state || $city || $street)
+      {
+        $valid = true;
+        $validStreet = false;
+        $validCity = false;
+        $validState = false;
+        $street = strtolower(preg_replace('/[^\w]+/', '', $street));
+        $city = strtolower(preg_replace('/[^\w]+/', '', $city));
+        $state = strtolower(preg_replace('/[^\w]+/', '', $state));
+
+        foreach ($matches as $match)
+        {
+          if ($street && strstr(strtolower(preg_replace('/[^\w]+/', '', $match['Street'])), $street))
+          {
+            $validStreet = true;
+          }
+
+          if ($city && $city == strtolower(preg_replace('/[^\w]+/', '', $match['City'])))
+          {
+            $validCity = true;
+          }
+
+          if ($state && $state == strtolower(preg_replace('/[^\w]+/', '', $match['State'])))
+          {
+            $validState = true;
+          }
+        }
+
+        if (($state && !$validState) || ($city && !$validCity) || ($street && !$validStreet))
+        {
+          $valid = false;
+        }
+
+        return $valid;
+      }
+      // otherwise we found matches for the postcode so it must be valid
+      else
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
 
