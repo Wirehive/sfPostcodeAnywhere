@@ -139,5 +139,66 @@ class sfPostcodeAnywhere
 
     return $valid;
   }
+
+
+  /**
+  * put your comment there...
+  *
+  * @param array $matches
+  * @param string $postcode
+  * @param string $place
+  * @param string $street
+  * @param string $filter
+  * @param string $preferredLanguage
+  * @return boolean
+  */
+  public function validateAddress(&$matches, $postcode, $place = false, $street = false, $filter = 'None', $preferredLanguage = 'English')
+  {
+    $params = array(
+      'SearchTerm' => $postcode,
+      'PreferredLanguage' => $preferredLanguage,
+      'Filter' => $filter
+    );
+
+    $url = $this->prepareUrl('PostcodeAnywhere/Interactive/Find', $params);
+
+    $results = $this->getData($url);
+
+    if (array_key_exists('Items', $results) && count($results['Items']))
+    {
+      $matches = $results['Items'];
+
+      // if a place or a street has been provided then try to do some validation against them
+      if ($place || $street)
+      {
+        $valid = false;
+        $street = strtolower(preg_replace('/[^\w]+/', '', $street));
+        $place = strtolower(preg_replace('/[^\w]+/', '', $place));
+
+        foreach ($matches as $match)
+        {
+          if ($street && strstr(strtolower(preg_replace('/\s+/', '', $match['StreetAddress'])), $street))
+          {
+            $valid = true;
+          }
+
+          if ($place && $place == strtolower(preg_replace('/\s+/', '', $match['Place'])))
+          {
+            $valid = true;
+          }
+        }
+
+        return $valid;
+      }
+      // otherwise we found matches for the postcode so it must be valid
+      else
+      {
+        return true;
+      }
+    }
+
+    // no results found for the postcode so it's an invalid address
+    return false;
+  }
 }
 
