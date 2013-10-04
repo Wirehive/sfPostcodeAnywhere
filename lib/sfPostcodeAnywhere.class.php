@@ -339,7 +339,7 @@ class sfPostcodeAnywhere
 
     if (!is_array($results) || !array_key_exists('Items', $results) || array_key_exists('Error', $results['Items'][0]))
     {
-      return sfView::ERROR;
+      return false;
     }
 
     return $results['Items'];
