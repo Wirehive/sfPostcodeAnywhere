@@ -578,6 +578,39 @@ class sfPostcodeAnywhere
 
     return $addresses;
   }
+
+
+  public function validateBankDetails($account, $sortcode, &$details)
+  {
+    if (!($account && $sortcode))
+    {
+      return false;
+    }
+
+    $params = array(
+      'AccountNumber' => $account,
+      'SortCode' => $sortcode
+    );
+
+    $url = $this->prepareUrl('BankAccountValidation/Interactive/Validate', '2.00', $params);
+
+    $results = $this->getData($url);
+
+    if (is_array($results) && array_key_exists('Items', $results) && count($results['Items']))
+    {
+      $details = $results['Items'][0];
+
+      $details['StatusInformation'] = preg_replace('/([a-z0-9])([A-Z])/', '\1 \2', $details['StatusInformation']);
+
+      return $details['IsCorrect'];
+    }
+    else
+    {
+      $details = array('StatusInformation' => 'Service Error - Please contact us for help');
+
+      return false;
+    }
+  }
 }
 
 
